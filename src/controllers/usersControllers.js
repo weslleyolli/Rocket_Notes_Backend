@@ -1,6 +1,7 @@
 const { hash, compare } = require("bcryptjs")
 const AppError = require("../utils/AppError")
 const sqliteConnection = require("../database/sqlite")
+const { request } = require("express")
 
 class usersControllers {
     async create(request, response) {
@@ -68,6 +69,23 @@ class usersControllers {
         );
 
         return response.status(200).json()
+    }
+
+    async delete(request, response) {
+        const { id } = request.params
+
+        const database = await sqliteConnection()
+        const checkUserExist = await database.get("SELECT * FROM users WHERE id = (?)", [id])
+
+        if(!checkUserExist) {
+            throw new AppError("este id não existe")
+        }
+
+        await database.run(
+            "DELETE FROM users WHERE id = (?)", [id]
+        )
+
+        return response.status(202).json()
     }
 }
 
