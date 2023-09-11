@@ -29,6 +29,10 @@ app.use((error, request, response, next) => {
     })
 })
 
+app.post("/users", (request, response) => {
+    response.send("Você chamou o post")
+})
+
 const port = 3333
 app.listen(port, () => {
     console.log(`Server is running on Port ${port}`)
